@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Brain Made of Logic</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div id="app">
+
+  <!-- ── LEFT PANEL: Controls ── -->
+  <aside id="ctrl-panel">
+    <div class="panel-brand">
+      <span class="brand-title">BRAIN MADE<br>OF LOGIC</span>
+      <button id="info-btn" class="icon-btn" title="About this project">?</button>
+    </div>
+
+    <div class="panel-scroll">
+
+      <section class="ctrl-section">
+        <div class="section-label">INJECT STIMULUS</div>
+        <div id="stim-grid">
+          <button class="stim-btn" data-stim="food">See Food</button>
+          <button class="stim-btn" data-stim="insult">Hear Insult</button>
+          <button class="stim-btn" data-stim="predator">Notice Predator</button>
+          <button class="stim-btn" data-stim="contradiction">Contradiction</button>
+          <button class="stim-btn" data-stim="memory">Recall Memory</button>
+          <button class="stim-btn" data-stim="praise">Receive Praise</button>
+          <button class="stim-btn" data-stim="pain">Experience Pain</button>
+          <button class="stim-btn" data-stim="name">Hear Your Name</button>
+          <button class="stim-btn" data-stim="light">Bright Light</button>
+          <button class="stim-btn" data-stim="puzzle">Observe Puzzle</button>
+        </div>
+      </section>
+
+      <section class="ctrl-section">
+        <div class="section-label">BRAIN PRESET</div>
+        <select id="preset-select" class="select-field">
+          <option value="calm">Calm</option>
+          <option value="paranoid">Paranoid</option>
+          <option value="distracted">Distracted</option>
+          <option value="obsessive">Obsessive</option>
+          <option value="rational">Rational</option>
+          <option value="dreaming">Dreaming</option>
+          <option value="hallucinatory">Hallucinatory</option>
+          <option value="overstimulated">Overstimulated</option>
+        </select>
+      </section>
+
+      <section class="ctrl-section">
+        <div class="section-label">PARAMETERS</div>
+        <div class="sliders">
+          <div class="sl-row"><label>Threshold Sensitivity</label><input type="range" id="sl-threshold" min="0" max="100" value="50"><span class="sl-val" id="sv-threshold">50</span></div>
+          <div class="sl-row"><label>Inhibition Strength</label><input type="range" id="sl-inhibition" min="0" max="100" value="50"><span class="sl-val" id="sv-inhibition">50</span></div>
+          <div class="sl-row"><label>Memory Persistence</label><input type="range" id="sl-memory" min="0" max="100" value="40"><span class="sl-val" id="sv-memory">40</span></div>
+          <div class="sl-row"><label>Noise Level</label><input type="range" id="sl-noise" min="0" max="100" value="10"><span class="sl-val" id="sv-noise">10</span></div>
+          <div class="sl-row"><label>Loop Intensity</label><input type="range" id="sl-loop" min="0" max="100" value="30"><span class="sl-val" id="sv-loop">30</span></div>
+          <div class="sl-row"><label>Fatigue / Decay</label><input type="range" id="sl-decay" min="0" max="100" value="20"><span class="sl-val" id="sv-decay">20</span></div>
+          <div class="sl-row"><label>Language Verbosity</label><input type="range" id="sl-verbosity" min="0" max="100" value="60"><span class="sl-val" id="sv-verbosity">60</span></div>
+          <div class="sl-row"><label>Emotional Reactivity</label><input type="range" id="sl-reactivity" min="0" max="100" value="50"><span class="sl-val" id="sv-reactivity">50</span></div>
+        </div>
+      </section>
+
+      <section class="ctrl-section">
+        <div class="section-label">SIMULATION</div>
+        <div class="sim-btns">
+          <button id="btn-run" class="sim-btn primary">▶ Start</button>
+          <button id="btn-step" class="sim-btn">Step →</button>
+        </div>
+        <div class="sim-btns" style="margin-top:.4rem">
+          <button id="btn-reset" class="sim-btn">Reset</button>
+          <button id="btn-random" class="sim-btn">⚡ Randomize</button>
+        </div>
+        <div class="tick-row">
+          <span id="sim-status" class="sim-status paused">◌ Idle</span>
+          <span class="tick-label">tick <span id="tick-count">0</span></span>
+        </div>
+      </section>
+
+      <div class="legend">
+        <div class="legend-row"><span class="leg-dot excite-dot"></span> Excitatory</div>
+        <div class="legend-row"><span class="leg-dot inhib-dot"></span> Inhibitory</div>
+        <div class="legend-row"><span class="leg-dot active-dot"></span> Firing neuron</div>
+      </div>
+
+    </div><!-- /panel-scroll -->
+  </aside>
+
+  <!-- ── CENTER: Visualization ── -->
+  <main id="viz-panel">
+    <div id="canvas-wrap">
+      <canvas id="brain-canvas"></canvas>
+      <div id="canvas-overlay">
+        <div id="dominant-badge"></div>
+        <div id="inspect-tooltip" class="hidden"></div>
+      </div>
+    </div>
+    <div id="viz-foot">
+      <span class="viz-note">McCulloch–Pitts threshold neurons · speculative model ·
+        click any node to inspect</span>
+    </div>
+  </main>
+
+  <!-- ── RIGHT PANEL: State, thoughts, output ── -->
+  <aside id="state-panel">
+    <div class="panel-scroll">
+
+      <section class="state-section">
+        <div class="section-label">BRAIN STATE</div>
+        <div id="dashboard">
+          <div class="meter-row"><div class="mtr-label">Perception</div><div class="meter"><div class="mtr-fill" id="m-perception" style="--clr:#22d3ee"></div></div><span class="mtr-pct" id="mp-perception">0%</span></div>
+          <div class="meter-row"><div class="mtr-label">Memory</div><div class="meter"><div class="mtr-fill" id="m-memory" style="--clr:#a78bfa"></div></div><span class="mtr-pct" id="mp-memory">0%</span></div>
+          <div class="meter-row"><div class="mtr-label">Emotion</div><div class="meter"><div class="mtr-fill" id="m-emotion" style="--clr:#fb923c"></div></div><span class="mtr-pct" id="mp-emotion">0%</span></div>
+          <div class="meter-row"><div class="mtr-label">Inhibition</div><div class="meter"><div class="mtr-fill" id="m-inhibition" style="--clr:#f43f5e"></div></div><span class="mtr-pct" id="mp-inhibition">0%</span></div>
+          <div class="meter-row"><div class="mtr-label">Language</div><div class="meter"><div class="mtr-fill" id="m-language" style="--clr:#34d399"></div></div><span class="mtr-pct" id="mp-language">0%</span></div>
+          <div class="meter-row"><div class="mtr-label">Action</div><div class="meter"><div class="mtr-fill" id="m-action" style="--clr:#fbbf24"></div></div><span class="mtr-pct" id="mp-action">0%</span></div>
+        </div>
+        <div id="state-summary">
+          <div class="sum-row"><span class="sum-k">Dominant</span><span class="sum-v" id="st-dominant">—</span></div>
+          <div class="sum-row"><span class="sum-k">State</span><span class="sum-v" id="st-state">Idle</span></div>
+        </div>
+      </section>
+
+      <section class="state-section">
+        <div class="section-label">THOUGHT STREAM</div>
+        <div id="thought-stream">
+          <div class="thought-placeholder">Awaiting activation…</div>
+        </div>
+      </section>
+
+      <section class="state-section">
+        <div class="section-label">BEHAVIORAL OUTPUT</div>
+        <div id="action-panel">
+          <div id="action-main">—</div>
+          <div id="action-sub"></div>
+        </div>
+      </section>
+
+    </div>
+  </aside>
+
+</div><!-- /app -->
+
+<!-- ── INFO MODAL ── -->
+<div id="info-modal" class="hidden" role="dialog" aria-modal="true">
+  <div id="info-box">
+    <button id="info-close" class="icon-btn close-btn">✕</button>
+    <h2>Brain Made of Logic</h2>
+    <p class="modal-kicker">A speculative simulation — not a realistic model of the human brain.</p>
+
+    <h3>The McCulloch–Pitts Neuron</h3>
+    <p>In 1943, Warren McCulloch and Walter Pitts proposed a formal model of the neuron as a logic unit. A neuron receives inputs, sums the <strong>excitatory</strong> ones, and fires if the total meets or exceeds a <em>threshold θ</em>. Any single <strong>inhibitory</strong> input prevents firing entirely, regardless of excitatory input.</p>
+    <p>Their key claim: <em>any logical proposition can be implemented by a network of such units</em>. Thought, they argued, could in principle be formalized as computation.</p>
+
+    <h3>What This App Does</h3>
+    <p>This app pushes that idea to a speculative extreme. Rather than a single logic gate, it assembles many threshold neurons into subsystems — Perception, Memory, Emotion, Inhibition, Language, Action — and connects them with weighted, signed edges. Stimuli cascade through the network and generate internal states, thought fragments, and behavioral outputs.</p>
+    <p>The result is theatrical and strange. It is designed to make the original conceptual bridge between neurons, logic, and computation feel <em>vivid</em> — while also making visible what is incomplete and uncanny about it.</p>
+
+    <h3>Conceptual Grounding</h3>
+    <ul>
+      <li>Each node follows the McCulloch–Pitts rule: Σ(excitatory) ≥ θ, and no inhibitory input active → fires.</li>
+      <li>Complex behavior emerges from many interacting simple units.</li>
+      <li>Feedback loops create sustained activity, rumination, and spiraling.</li>
+      <li>Parameters change threshold sensitivity, inhibition strength, memory persistence, and noise.</li>
+    </ul>
+
+    <p class="citation">McCulloch, W. S. &amp; Pitts, W. (1943). A logical calculus of the ideas immanent in nervous activity. <em>Bulletin of Mathematical Biophysics, 5</em>(4), 115–133.</p>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
